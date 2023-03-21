@@ -1,0 +1,13 @@
+{"_id":{"$oid":"63dfa458356ac2490ef3a294"},"name":"gröna linser","imageUrl":"linser.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0b41541119263a3d577ea"},"name":"farfalle","imageUrl":"farfalle.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0b41c41119263a3d577eb"},"name":"bacon","imageUrl":"bacon.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0b42141119263a3d577ec"},"name":"ägg","imageUrl":"ägg.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bd7afe3777660431e05c"},"name":"ärtor","imageUrl":"artor.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bd85fe3777660431e05d"},"name":"potatis","imageUrl":"potatis.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bd8efe3777660431e05e"},"name":"lök","imageUrl":"lok.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bda8fe3777660431e05f"},"name":"vitlök","imageUrl":"vitlok.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bdb4fe3777660431e060"},"name":"persilja","imageUrl":"persilja.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bdbbfe3777660431e061"},"name":"mynta","imageUrl":"mynta.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bdcefe3777660431e062"},"name":"morötter","imageUrl":"morotter.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bdd9fe3777660431e063"},"name":"olivolja","imageUrl":"olivolja.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}
+{"_id":{"$oid":"63e0bde8fe3777660431e064"},"name":"dill","imageUrl":"dill.jpg","_class":"com.myorg.hobbymat.model.Ingredient"}

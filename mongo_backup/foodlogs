@@ -1,0 +1,11 @@
+{"_id":{"$oid":"63d6f744f5e3e27396866fbd"},"date":{"$date":"2023-01-22T11:00:00Z"},"recipe":{"name":"grekisk bifteki med potatis i ugnen","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f744f5e3e27396866fbf"},"date":{"$date":"2023-01-24T11:00:00Z"},"recipe":{"name":"spaghetti med veg sås","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f744f5e3e27396866fc0"},"date":{"$date":"2023-01-25T17:00:00Z"},"recipe":{"name":"guldsparid från medelhavet","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f744f5e3e27396866fc1"},"date":{"$date":"2023-01-26T11:00:00Z"},"recipe":{"name":"kycklingben tomatsås spaghetti","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f744f5e3e27396866fc2"},"date":{"$date":"2023-01-28T11:00:00Z"},"recipe":{"name":"rödspätta","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f7aef5e3e27396866fc3"},"date":{"$date":"2023-01-22T11:00:00Z"},"recipe":{"name":"grekisk bifteki med potatis i ugnen","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f7aef5e3e27396866fc4"},"date":{"$date":"2023-01-23T11:00:00Z"},"recipe":{"name":"ärtor gryta by akis","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f7aef5e3e27396866fc5"},"date":{"$date":"2023-01-24T11:00:00Z"},"recipe":{"name":"spaghetti med veg sås","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f7aef5e3e27396866fc6"},"date":{"$date":"2023-01-25T17:00:00Z"},"recipe":{"name":"guldsparid från medelhavet","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f7aef5e3e27396866fc7"},"date":{"$date":"2023-01-26T11:00:00Z"},"recipe":{"name":"kycklingben tomatsås spaghetti","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}
+{"_id":{"$oid":"63d6f7aef5e3e27396866fc8"},"date":{"$date":"2023-01-28T11:00:00Z"},"recipe":{"name":"rödspätta","description":"some description"},"_class":"com.myorg.hobbymat.model.FoodLog"}

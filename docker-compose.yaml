@@ -1,0 +1,113 @@
+version: "3"
+services:
+  node1:
+    image: vromero/activemq-artemis:2.16.0
+    volumes:
+      - ./node1/broker.xml:/var/lib/artemis/etc-override/broker.xml
+      - ./artemis-users.properties:/var/lib/artemis/etc/artemis-users.properties
+      - ./artemis-roles.properties:/var/lib/artemis/etc/artemis-roles.properties
+      - ./jmx_prometheus_javaagent-0.12.0.jar:/var/lib/artemis/lib/jmx_prometheus_javaagent-0.12.0.jar
+      - ./artemis.yaml:/var/lib/artemis/etc/artemis.yaml
+    environment:
+      ARTEMIS_MIN_MEMORY: "512M"
+      ARTEMIS_MAX_MEMORY: "1G"
+      JAVA_OPTS: "-javaagent:/var/lib/artemis/lib/jmx_prometheus_javaagent-0.12.0.jar=8080:/var/lib/artemis/etc/artemis.yaml"
+    ports:
+      - "8161:8161"
+      - "61616:61616"
+    networks:
+      - backend
+  node2:
+    image: vromero/activemq-artemis:2.16.0
+    volumes:
+      - ./node2/broker.xml:/var/lib/artemis/etc-override/broker.xml
+      - ./artemis-users.properties:/var/lib/artemis/etc/artemis-users.properties
+      - ./artemis-roles.properties:/var/lib/artemis/etc/artemis-roles.properties
+      - ./jmx_prometheus_javaagent-0.12.0.jar:/var/lib/artemis/lib/jmx_prometheus_javaagent-0.12.0.jar
+      - ./artemis.yaml:/var/lib/artemis/etc/artemis.yaml
+    environment:
+      ARTEMIS_MIN_MEMORY: "512M"
+      ARTEMIS_MAX_MEMORY: "1G"
+      JAVA_OPTS: "-javaagent:/var/lib/artemis/lib/jmx_prometheus_javaagent-0.12.0.jar=8080:/var/lib/artemis/etc/artemis.yaml"
+    ports:
+      - "8162:8161"
+      - "61617:61616"
+    networks:
+      - backend
+  node3:
+    image: vromero/activemq-artemis:2.16.0
+    volumes:
+      - ./node3/broker.xml:/var/lib/artemis/etc-override/broker.xml
+      - ./artemis-users.properties:/var/lib/artemis/etc/artemis-users.properties
+      - ./artemis-roles.properties:/var/lib/artemis/etc/artemis-roles.properties
+      - ./jmx_prometheus_javaagent-0.12.0.jar:/var/lib/artemis/lib/jmx_prometheus_javaagent-0.12.0.jar
+      - ./artemis.yaml:/var/lib/artemis/etc/artemis.yaml
+    environment:
+      ARTEMIS_MIN_MEMORY: "512M"
+      ARTEMIS_MAX_MEMORY: "1G"
+      JAVA_OPTS: "-javaagent:/var/lib/artemis/lib/jmx_prometheus_javaagent-0.12.0.jar=8080:/var/lib/artemis/etc/artemis.yaml"
+    ports:
+      - "8163:8161"
+      - "61618:61616"
+    networks:
+      - backend
+  grafana:
+    image: grafana/grafana:6.2.5
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./grafana/config.monitoring
+    networks:
+      - backend
+  pushgateway:
+    image: prom/pushgateway
+    restart: always
+    expose:
+      - 9091
+    ports:
+      - "9091:9091"
+    networks:
+      - backend
+  prometheus:
+    image: bitnami/prometheus:latest
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - pushgateway
+    volumes:
+      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - backend
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: hobbymat
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - backend
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongo:27017/
+    networks:
+      - backend
+networks:
+  backend:

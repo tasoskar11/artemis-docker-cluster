@@ -1,0 +1,342 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:activemq"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:xi="http://www.w3.org/2001/XInclude"
+               xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+    <core xmlns="urn:activemq:core"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:activemq:core ">
+        <name>17c5eed547cc</name>
+        <jmx-management-enabled>true</jmx-management-enabled>
+        <persistence-enabled>true</persistence-enabled>
+        <journal-type>ASYNCIO</journal-type>
+        <paging-directory>/var/lib/artemis/data/node1/paging</paging-directory>
+        <bindings-directory>/var/lib/artemis/data/node1/bindings</bindings-directory>
+        <journal-directory>/var/lib/artemis/data/node1/journal</journal-directory>
+        <large-messages-directory>/var/lib/artemis/data/node1/large-messages</large-messages-directory>
+        <global-max-size>200000000</global-max-size>
+        <journal-datasync>true</journal-datasync>
+        <journal-min-files>10</journal-min-files>
+        <journal-pool-files>20</journal-pool-files>
+        <journal-device-block-size>4096</journal-device-block-size>
+        <journal-file-size>10M</journal-file-size>
+        <journal-buffer-timeout>32000</journal-buffer-timeout>
+        <journal-max-io>4096</journal-max-io>
+        <disk-scan-period>5000</disk-scan-period>
+        <max-disk-usage>98</max-disk-usage>
+        <critical-analyzer>true</critical-analyzer>
+        <critical-analyzer-timeout>120000</critical-analyzer-timeout>
+        <critical-analyzer-check-period>60000</critical-analyzer-check-period>
+        <critical-analyzer-policy>HALT</critical-analyzer-policy>
+        <acceptors>
+            <!--<acceptor name="artemis-ssl-external">tcp://0.0.0.0:61616?tcpSendBufferSize=33554432;tcpReceiveBufferSize=33554432;protocols=CORE,AMQP,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300</acceptor>
+
+            -->
+            <acceptor name="artemis-ssl-internal">
+                tcp://0.0.0.0:51616?tcpSendBufferSize=33554432;tcpReceiveBufferSize=33554432;protocols=CORE,AMQP,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;sslEnabled=false
+            </acceptor>
+            <!--<acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=33554432;tcpReceiveBufferSize=33554432;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;sslEnabled=false</acceptor>-->
+        </acceptors>
+        <connectors>
+            <!--<connector name="node1-external-connector">tcp://0.0.0.0:61616?sslEnabled=false</connector>-->
+            <connector name="node1-connector">tcp://node1:51616?sslEnabled=false</connector>
+        </connectors>
+        <broadcast-groups>
+            <broadcast-group name="bg-group1">
+                <group-address>${udp-address:231.7.7.7}</group-address>
+                <group-port>9876</group-port>
+                <broadcast-period>500</broadcast-period>
+                <connector-ref>node1-connector</connector-ref>
+            </broadcast-group>
+        </broadcast-groups>
+        <discovery-groups>
+            <discovery-group name="dg-group1">
+                <group-address>${udp-address:231.7.7.7}</group-address>
+                <group-port>9876</group-port>
+                <refresh-timeout>10000</refresh-timeout>
+            </discovery-group>
+        </discovery-groups>
+        <cluster-connections>
+            <cluster-connection name="local-cluster">
+                <connector-ref>node1-connector</connector-ref>
+                <discovery-group-ref discovery-group-name="dg-group1"/>
+            </cluster-connection>
+        </cluster-connections>
+        <cluster-user>artemis_cluster_user</cluster-user>
+        <cluster-password>test_cluster_password</cluster-password>
+        <ha-policy>
+            <live-only>
+
+            </live-only>
+        </ha-policy>
+        <security-settings>
+            <security-setting match="#">
+                <permission type="createNonDurableQueue" roles="amq"/>
+                <permission type="deleteNonDurableQueue" roles="amq"/>
+                <permission type="createDurableQueue" roles="amq"/>
+                <permission type="deleteDurableQueue" roles="amq"/>
+                <permission type="createAddress" roles="amq"/>
+                <permission type="deleteAddress" roles="amq"/>
+                <permission type="consume" roles="amq"/>
+                <permission type="browse" roles="amq"/>
+                <permission type="send" roles="amq"/>
+                <!-- we need this otherwise ./artemis data imp wouldn't work -->
+                <permission type="manage" roles="amq"/>
+            </security-setting>
+            <security-setting match="customer.#">
+                <permission type="createNonDurableQueue" roles="customer-admin,customer-write,customer-read"/>
+                <permission type="deleteNonDurableQueue" roles="customer-admin"/>
+                <permission type="createDurableQueue" roles="customer-admin,customer-write,customer-read"/>
+                <permission type="deleteDurableQueue" roles="customer-admin"/>
+                <permission type="createAddress" roles="customer-admin,customer-write,customer-read"/>
+                <permission type="deleteAddress" roles="customer-admin"/>
+                <permission type="consume" roles="customer-admin,customer-read"/>
+                <permission type="browse" roles="customer-admin,customer-read"/>
+                <permission type="send" roles="customer-admin,customer-write"/>
+                <!-- we need this otherwise ./artemis data imp wouldn't work -->
+                <permission type="manage" roles="customer-admin"/>
+            </security-setting>
+            <security-setting match="customer.queue.contact.details.#">
+                <permission type="send" roles="customer-contact-app"/>
+                <permission type="consume" roles="statistics-collector-app"/>
+                <permission type="browse" roles="statistics-collector-app"/>
+            </security-setting>
+            <security-setting match="customer.queue.personal.settings.#">
+                <permission type="send" roles="frontend-app"/>
+                <permission type="consume" roles="customer-contact-app"/>
+                <permission type="browse" roles="customer-contact-app"/>
+            </security-setting>
+            <security-setting match="customer.queue.contract.export.#">
+                <permission type="send" roles="customer-app"/>
+                <permission type="consume" roles="statistics-aggregator-app"/>
+                <permission type="browse" roles="statistics-aggregator-app"/>
+            </security-setting>
+            <security-setting match="sales.#">
+                <permission type="createNonDurableQueue" roles="sales-admin,sales-write,sales-read"/>
+                <permission type="deleteNonDurableQueue" roles="sales-admin"/>
+                <permission type="createDurableQueue" roles="sales-admin,sales-write,sales-read"/>
+                <permission type="deleteDurableQueue" roles="sales-admin"/>
+                <permission type="createAddress" roles="sales-admin,sales-write,sales-read"/>
+                <permission type="deleteAddress" roles="sales-admin"/>
+                <permission type="consume" roles="sales-admin,sales-read"/>
+                <permission type="browse" roles="sales-admin,sales-read"/>
+                <permission type="send" roles="sales-admin,sales-write"/>
+                <!-- we need this otherwise ./artemis data imp wouldn't work -->
+                <permission type="manage" roles="sales-admin"/>
+            </security-setting>
+            <security-setting match="sales.queue.prospects.export.request.#">
+                <permission type="send" roles="sales-info-app"/>
+                <permission type="consume" roles="sales-prospects-app"/>
+                <permission type="browse" roles="sales-prospects-app"/>
+            </security-setting>
+            <security-setting match="sales.queue.prospects.export.response.#">
+                <permission type="send" roles="sales-prospects-app"/>
+                <permission type="consume" roles="sales-info-app"/>
+                <permission type="browse" roles="sales-info-app"/>
+            </security-setting>
+            <security-setting match="sales.queue.invoice.details.#">
+                <permission type="send" roles="sales-info-app"/>
+                <permission type="consume" roles="frontend-app"/>
+                <permission type="browse" roles="frontend-app"/>
+            </security-setting>
+            <security-setting match="sales.topic.yearly.balance.status.#">
+                <permission type="send" roles="sales-admin,sales-info-app"/>
+                <permission type="consume" roles="sales-admin"/>
+                <permission type="browse" roles="sales-admin"/>
+                <permission type="createNonDurableQueue" roles="sales-admin,sales-info-app"/>
+                <permission type="deleteNonDurableQueue" roles="sales-admin,sales-info-app"/>
+                <permission type="createDurableQueue" roles="sales-admin,sales-info-app"/>
+                <permission type="deleteDurableQueue" roles="sales-admin,sales-info-app"/>
+                <permission type="createAddress" roles="sales-admin,sales-info-app"/>
+                <permission type="deleteAddress" roles="sales-admin,sales-info-app"/>
+            </security-setting>
+            <security-setting match="sales.topic.yearly.balance.status::status-balance-statistics-collector-app">
+                <permission type="consume" roles="sales-admin,statistics-collector-app"/>
+                <permission type="browse" roles="sales-admin,statistics-collector-app"/>
+            </security-setting>
+            <security-setting match="sales.topic.yearly.balance.status::status-balance-incident-manager-app">
+                <permission type="consume" roles="sales-admin,incident-manager-app"/>
+                <permission type="browse" roles="sales-admin,incident-manager-app"/>
+            </security-setting>
+            <security-setting match="statistics.#">
+                <permission type="createNonDurableQueue" roles="statistics-admin,statistics-write,statistics-read"/>
+                <permission type="deleteNonDurableQueue" roles="statistics-admin"/>
+                <permission type="createDurableQueue" roles="statistics-admin,statistics-write,statistics-read"/>
+                <permission type="deleteDurableQueue" roles="statistics-admin"/>
+                <permission type="createAddress" roles="statistics-admin,statistics-write,statistics-read"/>
+                <permission type="deleteAddress" roles="statistics-admin"/>
+                <permission type="consume" roles="statistics-admin,statistics-read"/>
+                <permission type="browse" roles="statistics-admin,statistics-read"/>
+                <permission type="send" roles="statistics-admin,statistics-write"/>
+                <!-- we need this otherwise ./artemis data imp wouldn't work -->
+                <permission type="manage" roles="statistics-admin"/>
+            </security-setting>
+            <security-setting match="statistics.queue.async.conversions.#">
+                <permission type="send" roles="frontend-app"/>
+                <permission type="consume" roles="statistics-collector-app"/>
+                <permission type="browse" roles="statistics-collector-app"/>
+            </security-setting>
+            <security-setting match="statistics.queue.async.aggregated.result.#">
+                <permission type="send" roles="statistics-exporter"/>
+                <permission type="consume" roles="statistics-aggregator"/>
+                <permission type="browse" roles="statistics-aggregator"/>
+            </security-setting>
+        </security-settings>
+        <address-settings>
+            <!-- if you define auto-create on certain queues, management has to be auto-create -->
+            <address-setting match="activemq.management#">
+                <dead-letter-address>DLQ</dead-letter-address>
+                <expiry-address>ExpiryQueue</expiry-address>
+                <redelivery-delay>0</redelivery-delay>
+                <!-- with -1 only the global-max-size is in use for limiting -->
+                <max-size-bytes>-1</max-size-bytes>
+                <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                <address-full-policy>PAGE</address-full-policy>
+                <auto-create-queues>true</auto-create-queues>
+                <auto-create-addresses>true</auto-create-addresses>
+                <auto-create-jms-queues>true</auto-create-jms-queues>
+                <auto-create-jms-topics>true</auto-create-jms-topics>
+            </address-setting>
+            <address-setting match="customer.#">
+                <dead-letter-address>customer.DLQ</dead-letter-address>
+                <auto-create-dead-letter-resources>true</auto-create-dead-letter-resources>
+                <dead-letter-queue-prefix></dead-letter-queue-prefix> <!-- override the default -->
+                <dead-letter-queue-suffix>.DLQ</dead-letter-queue-suffix>
+                <auto-create-expiry-resources>true</auto-create-expiry-resources>
+                <expiry-queue-prefix></expiry-queue-prefix> <!-- override the default -->
+                <expiry-queue-suffix>.EXP</expiry-queue-suffix>
+                <expiry-address>customer.EXP</expiry-address>
+                <expiry-delay>604800000</expiry-delay>
+                <redelivery-delay>100</redelivery-delay>
+                <redistribution-delay>500</redistribution-delay>
+                <!-- with -1 only the global-max-size is in use for limiting -->
+                <max-size-bytes>-1</max-size-bytes>
+                <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                <address-full-policy>PAGE</address-full-policy>
+                <auto-create-queues>true</auto-create-queues>
+                <auto-create-addresses>true</auto-create-addresses>
+                <auto-create-jms-queues>true</auto-create-jms-queues>
+                <auto-create-jms-topics>true</auto-create-jms-topics>
+            </address-setting>
+            <address-setting match="sales.#">
+                <dead-letter-address>sales.DLQ</dead-letter-address>
+                <auto-create-dead-letter-resources>true</auto-create-dead-letter-resources>
+                <dead-letter-queue-prefix></dead-letter-queue-prefix> <!-- override the default -->
+                <dead-letter-queue-suffix>.DLQ</dead-letter-queue-suffix>
+                <auto-create-expiry-resources>true</auto-create-expiry-resources>
+                <expiry-queue-prefix></expiry-queue-prefix> <!-- override the default -->
+                <expiry-queue-suffix>.EXP</expiry-queue-suffix>
+                <expiry-address>sales.EXP</expiry-address>
+                <expiry-delay>604800000</expiry-delay>
+                <redelivery-delay>100</redelivery-delay>
+                <redistribution-delay>500</redistribution-delay>
+                <!-- with -1 only the global-max-size is in use for limiting -->
+                <max-size-bytes>-1</max-size-bytes>
+                <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                <address-full-policy>PAGE</address-full-policy>
+                <auto-create-queues>true</auto-create-queues>
+                <auto-create-addresses>true</auto-create-addresses>
+                <auto-create-jms-queues>true</auto-create-jms-queues>
+                <auto-create-jms-topics>true</auto-create-jms-topics>
+            </address-setting>
+            <address-setting match="statistics.#">
+                <dead-letter-address>statistics.DLQ</dead-letter-address>
+                <auto-create-dead-letter-resources>true</auto-create-dead-letter-resources>
+                <dead-letter-queue-prefix></dead-letter-queue-prefix> <!-- override the default -->
+                <dead-letter-queue-suffix>.DLQ</dead-letter-queue-suffix>
+                <auto-create-expiry-resources>true</auto-create-expiry-resources>
+                <expiry-queue-prefix></expiry-queue-prefix> <!-- override the default -->
+                <expiry-queue-suffix>.EXP</expiry-queue-suffix>
+                <expiry-address>statistics.EXP</expiry-address>
+                <expiry-delay>604800000</expiry-delay>
+                <redelivery-delay>100</redelivery-delay>
+                <redistribution-delay>500</redistribution-delay>
+                <!-- with -1 only the global-max-size is in use for limiting -->
+                <max-size-bytes>-1</max-size-bytes>
+                <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                <address-full-policy>PAGE</address-full-policy>
+                <auto-create-queues>true</auto-create-queues>
+                <auto-create-addresses>true</auto-create-addresses>
+                <auto-create-jms-queues>true</auto-create-jms-queues>
+                <auto-create-jms-topics>true</auto-create-jms-topics>
+            </address-setting>
+            <!--default for catch all-->
+            <address-setting match="#">
+                <dead-letter-address>DLQ</dead-letter-address>
+                <expiry-address>ExpiryQueue</expiry-address>
+                <expiry-delay>604800000</expiry-delay>
+                <redelivery-delay>0</redelivery-delay>
+                <redistribution-delay>5000</redistribution-delay>
+                <!-- with -1 only the global-max-size is in use for limiting -->
+                <max-size-bytes>-1</max-size-bytes>
+                <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                <address-full-policy>PAGE</address-full-policy>
+                <auto-create-queues>true</auto-create-queues>
+                <auto-create-addresses>true</auto-create-addresses>
+                <auto-create-jms-queues>true</auto-create-jms-queues>
+                <auto-create-jms-topics>true</auto-create-jms-topics>
+            </address-setting>
+        </address-settings>
+        <addresses>
+            <address name="DLQ">
+                <anycast>
+                    <queue name="DLQ"/>
+                </anycast>
+            </address>
+            <address name="ExpiryQueue">
+                <anycast>
+                    <queue name="ExpiryQueue"/>
+                </anycast>
+            </address>
+            <address name="statistics.queue.async.conversions">
+                <anycast>
+                    <queue name="statistics.queue.async.conversions"/>
+                </anycast>
+            </address>
+            <address name="statistics.queue.async.aggregated.result">
+                <anycast>
+                    <queue name="statistics.queue.async.aggregated.result"/>
+                </anycast>
+            </address>
+
+            <address name="customer.queue.contract.export">
+                <anycast>
+                    <queue name="customer.queue.contract.export"/>
+                </anycast>
+            </address>
+            <address name="customer.queue.personal.settings">
+                <anycast>
+                    <queue name="customer.queue.personal.settings"/>
+                </anycast>
+            </address>
+            <address name="customer.queue.contact.details">
+                <anycast>
+                    <queue name="customer.queue.contact.details"/>
+                </anycast>
+            </address>
+
+            <address name="sales.topic.yearly.balance.status">
+                <multicast>
+                    <queue name="status-balance-statistics-collector-app"/>
+                    <queue name="status-balance-incident-manager-app"/>
+                </multicast>
+            </address>
+            <address name="sales.queue.prospects.export.request">
+                <anycast>
+                    <queue name="sales.queue.prospects.export.request"/>
+                </anycast>
+            </address>
+            <address name="sales.queue.prospects.export.response">
+                <anycast>
+                    <queue name="sales.queue.prospects.export.response"/>
+                </anycast>
+            </address>
+            <address name="sales.queue.invoice.details">
+                <anycast>
+                    <queue name="sales.queue.invoice.details"/>
+                </anycast>
+            </address>
+
+        </addresses>
+
+    </core>
+</configuration>
